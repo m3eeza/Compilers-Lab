@@ -1,15 +1,15 @@
 class DFA:
     current_state = None
 
-    def __init__(self, strRepr=None, states=None, alphabet=None, transition_function=None, start_state=None, goal_states=None):
-        self.strRepr = strRepr
+    def __init__(self, dfa_str=None, states=None, alphabet=None, transition_function=None, start_state=None, goal_states=None):
+        self.dfa_str = dfa_str
         self.states = states
         self.alphabet = alphabet
         self.transition_function = transition_function
         self.start_state = start_state
         self.goal_states = goal_states
         self.current_state = start_state
-        if strRepr:
+        if dfa_str:
             self.parser()
         return
 
@@ -33,16 +33,11 @@ class DFA:
                 continue
             else:
                 return False
-        return self.in_goal_state()
+        return self.in_goal_state(), self.current_state
 
     def parser(self):
-        goals = self.strRepr.split('#')[1].replace(',','')
-        self.goal_states = []
-        for g in goals:
-            self.goal_states.append(g)
-        rest = self.strRepr.split('#')[0]
-        rest = rest.replace(',', '')
-        states_description = rest.split(';')
+        self.goal_states = list(self.dfa_str.split('#')[1].replace(',',''))
+        states_description = self.dfa_str.split('#')[0].replace(',', '').split(';')
         self.states = [str(i) for i in range(len(states_description))]
         tf = dict()
         for desc in states_description:
