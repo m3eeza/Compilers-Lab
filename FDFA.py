@@ -33,25 +33,28 @@ class FDFA:
                 output += self.fdfa_output[state]
             else:
                 j -= 1
-        return output if output else 'ERROR!'
+                
+        if not in_goal_state:
+            _, state = self.DFA.run(input_str[i:len(input_str)])
+            output += self.fdfa_output[state]
+        return output
                 
 
 if __name__ == '__main__':
-    fdfa_str1 = '0,0,1,00;1,2,1,01;2,0,3,10;3,3,3,11#0,1,2'
+    fdfa_str1 = '0,0,1,00;1,0,2,01;2,3,2,10;3,2,3,11#1,3'
     myFDFA = FDFA(fdfa_str1)
-    print(myFDFA.fdfa_output)
-    print(myFDFA.run('100'))
-    print(myFDFA.run('101'))
-    print(myFDFA.run('110'))
-    print(myFDFA.run('10110'))
-    print(myFDFA.run('011'))
+    print(myFDFA.run('00111'))
+    print(myFDFA.run('0011100'))
+    print(myFDFA.run('110101'))
+    print(myFDFA.run('1101010'))
+    print(myFDFA.run('000'))
+
     print('#-##-##-##-##-##-##-##-##-##-#')
-    fdfa_str2 = '0,1,0,00;1,1,2,01;2,3,2,10;3,3,3,11#1,2'
+
+    fdfa_str2 = '0,1,0,00;1,3,0,01;2,1,3,10;3,2,3,11#3'
     myFDFA = FDFA(fdfa_str2)
-    print(myFDFA.fdfa_output)
-    print(myFDFA.run('011'))
-    print(myFDFA.run('110'))
-    print(myFDFA.run('00101'))
-    print(myFDFA.run('100100'))
-    print(myFDFA.run('100'))
-    print(myFDFA.run('111'))
+    print(myFDFA.run('10000'))
+    print(myFDFA.run('00'))
+    print(myFDFA.run('00001'))
+    print(myFDFA.run('10101'))
+    print(myFDFA.run('10'))
