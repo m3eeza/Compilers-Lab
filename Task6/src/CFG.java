@@ -25,7 +25,7 @@ public class CFG {
 	}
 
 	public static void main(String[] args) {
-		String input = "S,ScT,T;T,aSb,iaLb,e;L,SdL,S";
+		String input = "S,ACB,CbB,Ba;A,da,BC;B,g,e;C,h,e";
 		CFG cfg = new CFG(input);
 		String firstEncoding = cfg.First();
 		String followEncoding = cfg.Follow();
