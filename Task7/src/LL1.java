@@ -1,3 +1,4 @@
+
 // T10_37_19030_Mohamed_Ibrahim
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,13 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class T10_37_19030_Mohamed_Ibrahim {
+public class LL1 {
 
-	/*
-	 * Please update the file/class name, and the following comment
-	 */
-
-	// T10_37_19030_Mohamed_Ibrahim
+	
 	static class Pair implements Comparable<Pair> {
 		Character variable;
 		Character terminal;
@@ -105,12 +102,12 @@ public class T10_37_19030_Mohamed_Ibrahim {
 				change = false;
 				for (Character key : cfg.keySet()) {
 					for (String production : cfg.get(key)) {
-						if (hasAllEpsilon(production, first) && !first.get(key).contains(EPSILON)) {
+						if (hasAllEpsilon(production) && !first.get(key).contains(EPSILON)) {
 							first.get(key).add(EPSILON);
 							change = true;
 						} else {
 							for (int i = 0; i < production.toCharArray().length; i++) {
-								if (i == 0 || hasAllEpsilon(production.substring(0, i), first)) {
+								if (i == 0 || hasAllEpsilon(production.substring(0, i))) {
 									char currentSymbol = production.charAt(i);
 									@SuppressWarnings("unchecked")
 									LinkedHashSet<Character> current = (LinkedHashSet<Character>) first
@@ -257,7 +254,7 @@ public class T10_37_19030_Mohamed_Ibrahim {
 
 		}
 
-		private boolean hasAllEpsilon(String production, Map<Character, LinkedHashSet<Character>> first) {
+		private boolean hasAllEpsilon(String production) {
 			for (Character symbol : production.toCharArray()) {
 				if (first.get(symbol) != null && !first.get(symbol).contains(EPSILON))
 					return false;
@@ -274,6 +271,24 @@ public class T10_37_19030_Mohamed_Ibrahim {
 			return Character.isUpperCase(symbol);
 		}
 
+		private LinkedHashSet<Character> getFirst(String production) {
+			LinkedHashSet<Character> output = new LinkedHashSet<Character>();
+			if (hasAllEpsilon(production)) {
+				output.add(EPSILON);
+			}
+			for (int i = 0; i < production.toCharArray().length; i++) {
+				if (i == 0 || hasAllEpsilon(production.substring(0, i))) {
+					char currentSymbol = production.charAt(i);
+					@SuppressWarnings("unchecked")
+					LinkedHashSet<Character> current = (LinkedHashSet<Character>) first
+							.get(currentSymbol).clone();
+					current.remove(EPSILON);
+					output.addAll(current);
+				}
+			}
+			return output;
+		}
+
 		/**
 		 * Generates the parsing table for this context free grammar. This should set
 		 * your internal parsing table attributes
@@ -283,13 +298,12 @@ public class T10_37_19030_Mohamed_Ibrahim {
 		public String table() {
 			for (Character key : cfg.keySet()) {
 				for (String production : cfg.get(key)) {
-					Character alpha = production.charAt(0);
-					for (Character symbol : first.get(alpha)) {
+					for (Character symbol : getFirst(production)) {
 						if (symbol != EPSILON) {
 							table.put(new Pair(key, symbol), production);
 						}
 					}
-					if (first.get(alpha).contains(EPSILON)) {
+					if (getFirst(production).contains(EPSILON)) {
 						for (Character symbol : follow.get(key)) {
 							if (symbol != EPSILON) {
 								table.put(new Pair(key, symbol), production);
@@ -329,7 +343,7 @@ public class T10_37_19030_Mohamed_Ibrahim {
 			derivation.add("S");
 
 			while (true) {
-				if (stack.peek() == '$') {
+				if (stack.peek() == '$' && i == s.length()) {
 					break;
 				}
 				if (isVariable(stack.peek())) {
